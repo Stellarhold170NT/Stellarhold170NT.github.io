@@ -4,9 +4,9 @@
 
 # Site
 title: Huy Nguyen's Blog
-subtitle: 'Software Architecture & Engineering'
-description: 'Personal technical blog on software architecture, AI agents, and engineering invariants.'
-keywords: 'Software Architecture, AI Agents, Spec-Driven Development, Engineering'
+subtitle: ''
+description: 'Towards autonomous AI agent systems'
+keywords: 'Autonomous AI Agents, Software Architecture, Engineering'
 author: Huy Nguyen
 language: en
 timezone: 'Asia/Ho_Chi_Minh'

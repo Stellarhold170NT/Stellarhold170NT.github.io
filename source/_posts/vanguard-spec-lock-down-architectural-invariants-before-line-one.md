@@ -79,10 +79,8 @@ It is important to be precise about what this mechanism does and does not guaran
 
 The tool does not judge semantics; it manages accountability. It forces doc-to-code drift to appear as an explicit Git diff, where it cannot rot silently in the background.
 
-### Notes on the workflow
+In practice, this shifts how day-to-day maintenance actually feels. When a document is flagged stale, nobody is blamed, and no alarmist alert fires. The tool simply tells you: *here is what changed, and here is when a human last verified it.* 
 
-1. **Attestation over assumption:** A document is never fresh by default. Staleness only clears when an engineer explicitly runs `observe` and commits the updated lockfile.
-2. **Deterministic diagnostics:** When a spec fails a freshness check, the output includes the exact offending commits and paths.
-3. **Closing the loop with EGM:** When `vanguard` flags a doc as stale, that is the trigger to bring in EGM: revisit the design with the Elephant, update the spec, verify it with a fresh Goldfish, and re-attest.
+You open a session, walk through the recent diffs, patch the document where intent has drifted, and run `observe` again. The updated lockfile is committed alongside the changes, and you move on with confidence.
 
-Design is code. But design that rots silently without anyone knowing is worse than having no design at all.
+If we accept that design is the new code, we also have to accept the operational reality that comes with it: code rots in days, but design rots in silence. Keeping architectural invariants honest shouldn't depend on discipline or memory—it should simply be another check that passes before you write line one.

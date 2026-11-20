@@ -28,6 +28,12 @@ sidebar:
   padding: 18
   offset: 12
 
+# Sidebar Avatar
+avatar:
+  url: /images/avatar.jpg
+  rounded: true
+  rotated: false
+
 # Social Links
 social:
   GitHub: https://github.com/Stellarhold170NT || fab fa-github
