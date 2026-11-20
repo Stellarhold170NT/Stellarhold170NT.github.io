@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>vanguard-spec: Locking down architectural invariants before line one</title>
+    <url>/2026/11/03/vanguard-spec-lock-down-architectural-invariants-before-line-one/</url>
+    <content><![CDATA[<p>I used to be skeptical of spec-driven development with AI.</p>
+<p>In most teams, the workflow looks the same: prompt an LLM with a product requirement, wait ten seconds, and get back a 30-page markdown document. It has every architectural heading imaginable, but nobody actually reads it. You jump straight from an initial prompt to an exhaustive document, skipping the deliberate pushback where design risk actually gets eliminated.</p>
+<p>Things changed for me when I started using Dave Rensin’s Elephant-Goldfish Model (EGM).</p>
+<span id="more"></span>
+
+<h3 id="The-Elephant-and-the-Goldfish"><a href="#The-Elephant-and-the-Goldfish" class="headerlink" title="The Elephant and the Goldfish"></a>The Elephant and the Goldfish</h3><p>The concept behind EGM is straightforward:</p>
+<ol>
+<li><strong>The Elephant</strong> is a long-context session with the model. It holds the entire history: architecture trade-offs, constraints, and why alternative paths were rejected. It doesn’t write implementation code; its job is to interview you, push back on your assumptions, and record decisions.</li>
+<li><strong>The Goldfish</strong> is a stateless session with zero prior memory. You hand it only the finalized design document. If the goldfish misunderstands how a subsystem works, the problem isn’t the model—the document simply failed to explain itself.</li>
+</ol>
+<p>Code is only written once a goldfish can accurately reconstruct the implementation plan from the document alone. As Dave put it: <em>“Design is the new code.”</em> When models generate code faster than humans can review it, the primary artifact you need to govern is the design.</p>
+<h3 id="Where-specs-fail-over-time"><a href="#Where-specs-fail-over-time" class="headerlink" title="Where specs fail over time"></a>Where specs fail over time</h3><p>EGM solves the question: <em>is this document clear enough to build from?</em></p>
+<p>However, in any active codebase, you quickly run into a harder problem: <strong>how do you know when a document stops being true?</strong></p>
+<p>Consider a repository with 50 markdown specifications and a dozen engineers shipping daily. Code in <code>src/payments/</code> changes thirty times across three sprints. Does <code>docs/payments-spec.md</code> still reflect reality? Who owns it? When did someone last verify it against the implementation?</p>
+<p>Git doesn’t solve this. Git records that both files were touched in the commit log, but it has no semantic awareness that one file describes the invariants of the other. Proximity in the file tree creates a false sense of safety.</p>
+<p>Left unchecked, specifications become monuments to things that were once true but are no longer.</p>
+<h3 id="Invariant-tracking-with-Vanguard"><a href="#Invariant-tracking-with-Vanguard" class="headerlink" title="Invariant tracking with Vanguard"></a>Invariant tracking with Vanguard</h3><p>I built <code>vanguard</code> to address this single failure mode deterministically: <strong>identify which documents are stale, and trace the exact commits that caused the drift.</strong></p>
+<p>There is no LLM inside <code>vanguard</code>. It operates strictly as a state machine tracking file paths and commit hashes.</p>
+<p>Each specification declares what it watches in its frontmatter:</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">id:</span> <span class="string">payments-spec</span></span><br><span class="line"><span class="attr">watches:</span></span><br><span class="line">  <span class="attr">paths:</span> [<span class="string">&quot;src/payments/**&quot;</span>]</span><br><span class="line">  <span class="attr">review_after:</span> <span class="string">90d</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+
+<p>When an engineer reviews the document against the implementation and confirms it is accurate, they attest to it:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vanguard observe payments-spec</span><br></pre></td></tr></table></figure>
+
+<p>This writes an attestation entry into a lockfile (<code>vanguard.lock</code>), tied to the current commit hash. If files matching <code>src/payments/**</code> change later in Git, or if 90 days elapse without re-attestation, <code>vanguard check</code> flags the document as stale and outputs the exact commits responsible.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vanguard check --path src/payments --format json</span><br></pre></td></tr></table></figure>
+
+<p>This gives CI pipelines and AI agents a machine-readable signal: before an agent or developer touches <code>src/payments</code>, it can verify whether the architectural contract is current.</p>
+<h3 id="Freshness-is-not-correctness"><a href="#Freshness-is-not-correctness" class="headerlink" title="Freshness is not correctness"></a>Freshness is not correctness</h3><p>It is important to be precise about what this mechanism does and does not guarantee:</p>
+<ul>
+<li><strong>Fresh</strong> does not mean <em>correct</em>. It means a human verified the document, and nothing in the watched paths has changed since that commit.</li>
+<li><strong>Stale</strong> does not mean <em>broken</em>. The underlying code change might have been an internal refactor that didn’t violate the spec. Stale simply means the premise of the last human review has changed, requiring human attention.</li>
+</ul>
+<p>The tool does not judge semantics; it manages accountability. It forces doc-to-code drift to appear as an explicit Git diff, where it cannot rot silently in the background.</p>
+<p>In practice, this shifts how day-to-day maintenance actually feels. When a document is flagged stale, nobody is blamed, and no alarmist alert fires. The tool simply tells you: <em>here is what changed, and here is when a human last verified it.</em> </p>
+<p>You open a session, walk through the recent diffs, patch the document where intent has drifted, and run <code>observe</code> again. The updated lockfile is committed alongside the changes, and you move on with confidence.</p>
+<p>If we accept that design is the new code, we also have to accept the operational reality that comes with it: code rots in days, but design rots in silence. Keeping architectural invariants honest shouldn’t depend on discipline or memory—it should simply be another check that passes before you write line one.</p>
+]]></content>
+      <categories>
+        <category>Architecture</category>
+      </categories>
+      <tags>
+        <tag>Software Architecture</tag>
+        <tag>Spec-Driven Development</tag>
+        <tag>AI Engineering</tag>
+      </tags>
+  </entry>
+</search>
