@@ -1,0 +1,81 @@
+# ---------------------------------------------------------------
+# NexT Theme Settings for Stellarhold170NT
+# ---------------------------------------------------------------
+
+# Scheme / Style
+scheme: Gemini
+
+# Dark Mode
+darkmode: false
+
+# Menu Settings
+menu:
+  home: / || fa fa-home
+  tags: /tags/ || fa fa-tags
+  categories: /categories/ || fa fa-th
+  archives: /archives/ || fa fa-archive
+
+menu_settings:
+  icons: true
+  badges: false
+
+# Sidebar Settings
+sidebar:
+  position: left
+  width_expanded: 320
+  width_dual_column: 240
+  display: post
+  padding: 18
+  offset: 12
+
+# Social Links
+social:
+  GitHub: https://github.com/Stellarhold170NT || fab fa-github
+
+social_icons:
+  enable: true
+  icons_only: false
+  transition: false
+
+# Codeblock Settings
+codeblock:
+  theme:
+    light: default
+    dark: stackoverflow-dark
+  copy_button:
+    enable: true
+    style: flat
+
+# Back to top
+back2top:
+  enable: true
+  sidebar: false
+  scrollpercent: true
+
+# Reading progress bar
+reading_progress:
+  enable: true
+  start_at: top
+  position: top
+  reversed: false
+  color: "#37c6c0"
+  height: 3px
+
+# Local Search
+local_search:
+  enable: true
+  trigger: auto
+  top_n_per_article: 1
+  unescape: false
+  preload: false
+
+# Animation
+motion:
+  enable: true
+  async: false
+  transition:
+    post_block: fadeIn
+    post_header: fadeInDown
+    post_body: fadeInDown
+    coll_header: fadeInLeft
+    sidebar: fadeInUp
